@@ -58,7 +58,7 @@ function processImage(newImName, centralColor, colorRange, obj_size)
             subtracted = cropedNewImage(:,:,i);
 
             %calculate number of valid objects in the image
-            obj_num = Main(subtracted, min_mold_pix_val, max_mold_pix_val, min_obj_size, max_obj_size, min_mold_size);
+            obj_num = ImAnalysis(subtracted, min_mold_pix_val, max_mold_pix_val, min_obj_size, max_obj_size, min_mold_size);
 
             %sound allarm if one or more valid object is present
             if (obj_num >= 1)
