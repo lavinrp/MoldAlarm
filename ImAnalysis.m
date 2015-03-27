@@ -42,7 +42,7 @@ function reImAnalysisingObjects = ImAnalysis(img, min_mold_pix_val, max_mold_pix
     title('filtered for size');
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    %!!!!!!!!!!!!!!!!!!!!ENHANCE REImAnalysisING OBJECTS!!!!!!!!!!!!!!!!!!!!!!!!!
+    %!!!!!!!!!!!!!!!!!!!!ENHANCE REMAINING OBJECTS!!!!!!!!!!!!!!!!!!!!!!!!!
     %shape that dilation will use
     structureElement = strel('disk', 3, 0);
     %structureElement = strel('square', 5); alternate dialation option
