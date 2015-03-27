@@ -46,7 +46,6 @@ function processImage(newImName, centralColor, colorRange, obj_size)
  
     max_obj_size = .5 * obj_size;
 
-    
    
         for i = 1:NumFrames
 
