@@ -33,8 +33,8 @@ function [centralColor, colorRange, validPix] = getObjectInfo(img)
   
         %select the color to search for
         colorSample = imcrop(singleObjectImg);
-        centralColor = (mean(mean(colorSample))) - colorOffset;
-        colorRange = mean(range(colorSample)) / 2;
+        centralColor = L_Mean(colorSample) - colorOffset;
+        colorRange = L_Range(colorSample) / 2;
 
         %convert all invalid pixels to white and sum all valid pixels
         validPix = 0;

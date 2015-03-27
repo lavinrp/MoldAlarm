@@ -27,6 +27,6 @@ function r = L_Range(mtrx)
         
         %inform user that an error occurred
         fprintf('Error finding min or max. Using L_min and L_max instead \n');
-        r = abs(L_max - L_min)
+        r = abs(L_max - L_min);
     end 
 end
