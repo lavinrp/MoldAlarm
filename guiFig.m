@@ -22,7 +22,7 @@ function varargout = guiFig(varargin)
 
 % Edit the above text to modify the response to help guiFig
 
-% Last Modified by GUIDE v2.5 02-Feb-2015 12:36:17
+% Last Modified by GUIDE v2.5 02-Apr-2015 13:18:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,7 +54,10 @@ function guiFig_OpeningFcn(hObject, eventdata, handles, varargin)
 
 %initialize variables for GUI
 
-
+%set(handles.useRefImg, true);
+useRefImg = false;
+handles.useRefImg = useRefImg;
+guidata(hObject, handles);
 
 % Choose default command line output for guiFig
 handles.output = hObject;
@@ -396,6 +399,8 @@ function y = initialize(handles)
    global Text;
 
    %initial settings
+   
+   
    NumBeep = 0;
    AllOldImagesProcessed = false;
    Beep = false;
@@ -428,7 +433,7 @@ function y = initialize(handles)
    
    set(handles.Frames,'string','1');
    set(handles.Folder,'string','');
-
+   
 %------------------------------------------------------------------------
 % --- Executes on button press in close.
 function close_Callback(hObject, eventdata, handles)
@@ -442,3 +447,24 @@ function close_Callback(hObject, eventdata, handles)
     delete(handles.figure1);
     clear all;
     close all;
+
+
+% --- Executes on button press in UseRefImg.
+function UseRefImg_Callback(hObject, eventdata, handles)
+% hObject    handle to UseRefImg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+% Hint: get(hObject,'Value') returns toggle state of UseRefImg
+
+
+% --- Executes on button press in CalibrationType.
+function CalibrationType_Callback(hObject, eventdata, handles)
+% hObject    handle to CalibrationType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of CalibrationType
