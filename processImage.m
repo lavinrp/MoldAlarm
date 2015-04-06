@@ -1,4 +1,4 @@
-function processImage(newImName, centralColor, colorRange, obj_size)
+function processImage(newImName, minColor, maxColor, objSize)
 
     global Beep;
     global ImageInfo;
@@ -39,12 +39,19 @@ function processImage(newImName, centralColor, colorRange, obj_size)
     min_obj_size = 1;
     min_mold_size = 290;
     
-    min_mold_pix_val = centralColor - colorRange;
-    max_mold_pix_val = centralColor + colorRange;
-    min_mold_pix_val = min_mold_pix_val + 30;
-    max_mold_pix_val = max_mold_pix_val + 30;
+  %TODO: remove commented code after testing
+%     min_mold_pix_val = centralColor - colorRange;
+%     max_mold_pix_val = centralColor + colorRange;
+% 
+%     min_mold_pix_val = min_mold_pix_val + 30;
+%     max_mold_pix_val = max_mold_pix_val + 30;
+    
+%TODO: remove magic numbetrs
+%TODO: find why this is always 60
+    min_mold_pix_val = minColor + 30;
+    max_mold_pix_val = maxColor + 30;
  
-    max_obj_size = .5 * obj_size;
+    max_obj_size = .5 * objSize;
 
    
         for i = 1:NumFrames

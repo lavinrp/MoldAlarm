@@ -22,7 +22,7 @@ function varargout = guiFig(varargin)
 
 % Edit the above text to modify the response to help guiFig
 
-% Last Modified by GUIDE v2.5 02-Apr-2015 13:18:05
+% Last Modified by GUIDE v2.5 06-Apr-2015 12:36:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -157,12 +157,20 @@ function reference_Callback(hObject, eventdata, handles)
    getFrames();
    
    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~testing~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   %TODO: better names
+   
+   %directory for tif files
    tifFiles = dir(strcat(ImageFolder,'/*.tif')); 
+   
+   %find reference Image
+   refImageName = tifFiles(1).name; %reference image should always be the first image
+   refImagePath = strcat(ImageFolder,'/',refImageName);  %finds the filepath
+   refImage = imread(refImagePath);
+   cropedRefImage = imcrop(refImage(:,:,1), Frames);
+   
+   %find Calibration Image
    calibrationImageName = tifFiles(2).name;
    calibrationImagePath = strcat(ImageFolder,'/',calibrationImageName);  %finds the filepath
    calibrationImage = imread(calibrationImagePath);
-   
    cropedSecondImage = imcrop(calibrationImage(:,:,1), Frames);
 
    
@@ -176,8 +184,20 @@ function reference_Callback(hObject, eventdata, handles)
    global object_size;
    
    %Calibrate for image analysis
-   [central_color, color_range, object_size] = getObjectInfo(cropedSecondImage);
    
+   %auto calibrate
+   if ~get(handles.CalibrationType, 'Value')
+       [central_color, color_range, object_size] = getObjectInfo(cropedSecondImage);
+       maxColor = central_color + color_range;
+       minColor = central_color - color_range;
+        
+       %set gui values from calibration
+       set(handles.MaxColor, 'String', num2str(maxColor));
+       set(handles.MinColor, 'String', num2str(minColor));
+       set(handles.ObjectSize, 'String', num2str(object_size));
+   end
+   %update guidata
+   guidata(hObject, handles);
    %This should work instead of global vars, but it doesnt because matlab is dumb
    % Update handles structure
    %guidata(hObject, handles);
@@ -226,8 +246,15 @@ function start_Callback(hObject, eventdata, handles)
     %The variables will be passed to processImage
     global central_color;
     global color_range;
-    global object_size; 
-
+    global object_size;
+%     minColor = str2num(handles.MinColor);
+%     maxColor= str2num(handles.MaxColor);
+%     objectSize = str2num(handles.ObjectSize);
+    minColor = str2num(get(handles.MinColor, 'string'));
+    maxColor = str2num(get(handles.MaxColor, 'string'));
+    objectSize = str2num(get(handles.ObjectSize, 'string'));
+    
+    %TODO: remove figure?
     figure;
     
     setButtonsForRun(handles);
@@ -245,7 +272,7 @@ function start_Callback(hObject, eventdata, handles)
         if (not(AllOldImagesProcessed)&& (newNumFiles>NumImagesProcessed))
                 for imageNumber = (NumImagesProcessed+1):length(tifFiles)
                     newimageName = tifFiles(imageNumber).name;
-                    processImage(newimageName, central_color, color_range, object_size);
+                    processImage(newimageName, minColor, maxColor, objectSize);
                     if Beep
                         break;
                     end
@@ -259,7 +286,7 @@ function start_Callback(hObject, eventdata, handles)
         if (AllOldImagesProcessed && (newNumFiles>NumImagesProcessed)&& not(Beep))
             pause(30);
             imageNameNew = tifFiles(NumImagesProcessed+1).name;
-            processImage(imageNameNew, central_color, color_range, object_size);     
+            processImage(imageNameNew, minColor, maxColor, objectSize);     
         end       
         pause(1);
     end
@@ -303,9 +330,10 @@ function start_Callback(hObject, eventdata, handles)
     %in the reference_callback function and are only used here.
     %
     %The variables will be passed to processImage
-    global central_color;
-    global color_range;
-    global object_size; 
+    %TODO: remove variables below and comment above
+%     global central_color;
+%     global color_range;
+%     global object_size; 
 
     
     Beep = false;
@@ -324,7 +352,7 @@ function start_Callback(hObject, eventdata, handles)
         if (not(AllOldImagesProcessed)&&(newNumFiles>NumImagesProcessed))
                 for imageNumber = (NumImagesProcessed+1):length(tifFiles)
                     newimageName = tifFiles(imageNumber).name;
-                    processImage(newimageName, central_color, color_range, object_size);
+                    processImage(newimageName, minColor, maxColor, objectSize);
                     if Beep
                         break;
                     end
@@ -467,4 +495,89 @@ function CalibrationType_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+if get(handles.CalibrationType, 'Value')
+    set(handles.MaxColor, 'enable', 'on');
+    set(handles.MinColor, 'enable', 'on');
+    set(handles.ObjectSize, 'enable', 'on');
+else
+    set(handles.MaxColor, 'enable', 'inactive');
+    set(handles.MinColor, 'enable', 'inactive');
+    set(handles.ObjectSize, 'enable', 'inactive');
+end
+
+%update variables
+guidata(hObject, handles);
+
+
 % Hint: get(hObject,'Value') returns toggle state of CalibrationType
+
+
+
+function MaxColor_Callback(hObject, eventdata, handles)
+% hObject    handle to MaxColor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of MaxColor as text
+%        str2double(get(hObject,'String')) returns contents of MaxColor as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function MaxColor_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to MaxColor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function MinColor_Callback(hObject, eventdata, handles)
+% hObject    handle to MinColor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of MinColor as text
+%        str2double(get(hObject,'String')) returns contents of MinColor as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function MinColor_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to MinColor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function ObjectSize_Callback(hObject, eventdata, handles)
+% hObject    handle to ObjectSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ObjectSize as text
+%        str2double(get(hObject,'String')) returns contents of ObjectSize as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function ObjectSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ObjectSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
