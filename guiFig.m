@@ -495,14 +495,20 @@ function CalibrationType_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%Manual Calibration on
 if get(handles.CalibrationType, 'Value')
     set(handles.MaxColor, 'enable', 'on');
     set(handles.MinColor, 'enable', 'on');
     set(handles.ObjectSize, 'enable', 'on');
+    %user can start program after calibration
+    set(handles.start, 'enable', 'on');
+%manual Calibration Off
 else
     set(handles.MaxColor, 'enable', 'inactive');
     set(handles.MinColor, 'enable', 'inactive');
     set(handles.ObjectSize, 'enable', 'inactive');
+    %if program is not calibrated user can not start program
+    set(handles.start, 'enable', 'off');
 end
 
 %update variables
