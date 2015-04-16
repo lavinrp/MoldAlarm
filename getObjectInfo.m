@@ -1,5 +1,9 @@
 function [centralColor, colorRange, validPix] = getObjectInfo(img)
     
+    %TODO: mvoe this to gui and remove the figure call
+    %create new window so image is not placed on gui
+    figure;
+    
     %here the user should select a single object
     singleObjectImg = imcrop(img);
     %imshow(singleObjectImg);
@@ -52,5 +56,8 @@ function [centralColor, colorRange, validPix] = getObjectInfo(img)
         imshow(singleObjectImg);
         acceptableImg = menu('Would you like to re-crop and alter the accepted color range?', 'Yes', 'No');
         
+        %remove calibration image to reduce clutter
+        %TODO: move display to gui will make this command useless
+        close;
      end
     

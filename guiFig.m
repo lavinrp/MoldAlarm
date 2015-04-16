@@ -262,7 +262,7 @@ function start_Callback(hObject, eventdata, handles)
     while not(Beep) && not(Done)
         
         pause(10);
-        % run the program as longa as no mold was found or the alarm is on
+        % run the program as long as no mold was found or the alarm is on
         % check how many files there are in the image folder
 
         tifFiles = dir(strcat(ImageFolder,'/*.tif')); 

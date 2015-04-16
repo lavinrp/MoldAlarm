@@ -10,6 +10,7 @@ function getFrames()
    gotFrames = false;
    
    while not(gotFrames)
+         %TODO: move this out of loop
          tifFiles = dir(strcat(ImageFolder,'/*.tif')); 
  
          if ~isempty(tifFiles);              
@@ -20,6 +21,7 @@ function getFrames()
             for i = 1:NumFrames
                 fig1 = figure();
                 [~,~,refImage,Frames(i,:)] = imcrop(refImage(:,:,1));
+                
             end
 
             gotFrames = true;
@@ -34,5 +36,5 @@ function getFrames()
     
    NumImagesProcessed = 1;
    ImageInfo(1).imageName = RefImageName;
-   
+   close;
 end
